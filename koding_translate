@@ -1,0 +1,148 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_WORD_LENGTH 50
+
+const char* english_words[] = {
+    "hello", "good", "morning", "computer", "eat",
+    "drink", "sleep", "work", "go", "home", "school",
+    "teacher", "student", "big", "small", "hot", "cold",
+    "happy", "sad", "angry", "like", "love", "water",
+    "food", "music", "movie", "game", "computer", "play",
+
+    // Colors
+    "red", "green", "blue", "yellow", "black", "white", "orange", "purple", "pink",
+    // Animals
+    "dog", "cat", "bird", "fish", "snake", "elephant", "lion", "tiger", "monkey",
+    // Body parts
+    "head", "arm", "leg", "hand", "foot", "eye", "ear", "nose", "mouth",
+    // Clothes
+    "shirt", "pants", "dress", "skirt", "shoes", "hat", "jacket", "scarf", "gloves",
+    // Nature
+    "tree", "flower", "river", "mountain", "ocean", "sky", "sun", "moon", "rain",
+    // Numbers
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+    // Transportation
+    "car", "bus", "train", "airplane", "bicycle",
+    // Adjectives
+    "fast", "slow", "tall", "short", "big", "small", "good", "bad", "happy", "sad" ,
+    // Fruits
+    "apple", "mango", "banana", "orange", "grape", "strawberry", "pineapple", "watermelon", "durian" ,
+    // Family Members
+    "father", "mother", "brother", "sister", "grandfather", "grandmother", "uncle", "aunt", "cousin" ,
+    // Household Items
+    "eating utensils", "plate", "glass", "cookware", "brush", "soap", "cloth", "bucket", "chair","sofa", 
+    "table","bed", "dining chair", "bookshelf", "dining table", "bench" ,
+    // Stationery Items
+    "pencil", "eraser", "book", "ruler", "marker", "pen", "pencil sharpener", "highlighter", "paper" ,
+    // Bedroom Items
+    "bed", "blanket", "pillow", "wardrobe", "bedside lamp", "nightstand", "alarm clock", "carpet", "curtains",
+    //verb
+    "call","describe","try","enjoy","rob","cancel","accept","accompany","accuse","cause","continue","convince","cook","count","create","define","develop","die","dry","edit","eliminate","discourage","employ","follow","hike","hunt","kill","knock","land","laugh","need","notice","oblige","offer","open","order","paint","pass","pay","pick","place","plant","pray","prepare","preserve","pretend","prevent","produce","propose","prefer","teach","sew","spray","stare","start","suck","suffer","support","suspect","taste" ,
+    // bathroom items
+    "tooth brush","shampoo","soap","shaving cream","seodorant","toilrt paper","bathtub","closet","faucet","sink","mirror","towel","shower curtain","door","dipper"};
+const char* indonesian_words[] = {
+    "halo", "baik", "selamat pagi", "komputer", "makan",
+    "minum", "tidur", "kerja", "pergi", "rumah", "sekolah",
+    "guru", "siswa", "besar", "kecil", "panas", "dingin",
+    "senang", "sedih", "marah", "suka", "cinta", "air",
+    "makanan", "musik", "film", "permainan", "komputer", "main",
+
+    // Colors (Bahasa Indonesia)
+    "merah", "hijau", "biru", "kuning", "hitam", "putih", "oranye", "ungu", "merah muda",
+    // Animals (Bahasa Indonesia)
+    "anjing", "kucing", "burung", "ikan", "ular", "gajah", "singa", "harimau", "monyet",
+    // Body parts (Bahasa Indonesia)
+    "kepala", "lengan", "kaki", "tangan", "kaki", "mata", "telinga", "hidung", "mulut",
+    // Clothes (Bahasa Indonesia)
+    "kemeja", "celana panjang", "gaun", "rok", "sepatu", "topi", "jaket", "syal", "sarung tangan",
+    // Nature (Bahasa Indonesia)
+    "pohon", "bunga", "sungai", "gunung", "laut", "langit", "matahari", "bulan", "hujan",
+    // Numbers (Bahasa Indonesia)
+    "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh",
+    // Transportation (Bahasa Indonesia)
+    "mobil", "bis", "kereta api", "pesawat terbang", "sepeda",
+     // Adjectives (Bahasa Indonesia)
+    "cepat", "lambat", "tinggi", "pendek", "besar", "kecil", "baik", "buruk", "senang", "sedih" ,
+    // Buah-buahan (Bahasa Indonesia)
+    "apel", "mangga", "pisang", "jeruk", "anggur", "stroberi", "nanas", "semangka", "durian",
+    // Anggota Keluarga (Bahasa Indonesia)
+    "ayah", "ibu", "kakak", "adik", "kakek", "nenek", "paman", "bibi", "sepupu" ,
+    // Alat Rumah Tangga (Bahasa Indonesia)
+    "alat makan", "piring", "gelas", "alat masak", "sikat", "sabun", "lap", "ember", "kursi","sofa", 
+    "meja","kasur", "kursi makan", "rak buku", "meja makan", "bangku" ,
+    // Alat Tulis (Bahasa Indonesia)
+    "pensil", "penghapus", "buku", "penggaris", "spidol", "pulpen", "pengasah pensil", "stabilo", "kertas" ,
+    // Benda di Kamar Tidur (Bahasa Indonesia)
+    "kasur", "selimut", "bantal", "lemari pakaian", "lampu tidur", "meja samping tempat tidur", "jam alarm", "karpet", "gorden" ,
+    // kata kerja
+    "memanggil","menggambarkan","mencoba","menikmati","merampok","membatalkan","menerima","menemani","menuduh","menyebabkan","melanjutkan","meyakinkan","memasak","menghitung","menciptakan","menetapkan","mengembangkan","meninggal","kering","menyunting","mengeliminasi","meremehkan","mempekerjakan","mengikuti","mendaki","memburu","membunuh","mengetuk","mendarat","tertawa","butuh","pemberitahuan","mewajibkan","menawarkan","membuka","memesan","melukis","melewati","membayar","memetik","menetapkan","menanam","berdoa","mempersiapkan","mengawetkan","berpura-pura","mencegah","menghasilkan","mengajukan","lebih suka","mengajar","menjahit","menyemprot","memandangi","memulai","menghisap","menderita","mendukung","mencurigai","mencicipi" ,
+    // benda di kamar mandi 
+    "sikat gigi","shampo","sabun","krim cukur","deodorant","tisu toilet","bak mandi","kloset","kran air","wastafel","cermin","handuk","tirai kamar mandi","pintu","gayung"};
+
+int main() {
+  char word[MAX_WORD_LENGTH];
+  int translate_to_english;
+  int continue_translating = 1;
+   while (continue_translating) {
+
+  // Get user preference (English to Indonesian or vice versa)
+  printf("**Selamat datang di program penerjemah sederhana!**\n");
+  printf("Terjemahkan dari\n- Inggris ke Indonesia press 1\n- Indonesia ke Inggris press 0\nInput pilihan : ");
+  scanf("%d", &translate_to_english);
+
+  // Consume remaining newline character (if any)
+  while (getchar() != '\n');
+
+  // Validate user input
+  if (translate_to_english != 0 && translate_to_english != 1) {
+    printf("Pilihan tidak valid. Masukkan 0 atau 1.\n");
+    return 1;
+  }
+
+  // Get the word to translate
+  printf("Masukkan kata yang ingin diterjemahkan: ");
+  fgets(word, MAX_WORD_LENGTH, stdin);
+
+  // Remove trailing newline character
+  word[strcspn(word, "\n")] = '\0';
+
+  // Translate based on user preference
+  if (translate_to_english) {
+    // English to Indonesian
+    printf("Terjemahan Bahasa Indonesia: ");
+    int found = 0;
+    for (int i = 0; i < sizeof(english_words) / sizeof(english_words[0]); i++) {
+      if (strcmp(word, english_words[i]) == 0) {
+        printf("%s\n", indonesian_words[i]);
+        found = 1;
+        break;
+      }
+    }
+    if (!found) {
+      printf("Kata tidak ditemukan dalam kamus.\n");
+    }
+  } else {
+    // Indonesian to English
+    printf("English translation: ");
+    int found = 0;
+    for (int i = 0; i < sizeof(indonesian_words) / sizeof(indonesian_words[0]); i++) {
+      if (strcmp(word, indonesian_words[i]) == 0) {
+        printf("%s\n", english_words[i]);
+        found = 1;
+        break;
+      }
+    }
+    if (!found) {
+      printf("Kata tidak ditemukan dalam kamus.\n");
+    }
+  }
+
+     printf("Apakah Anda ingin menerjemahkan kata lain? (1/0): ");
+    scanf("%d", &continue_translating);
+
+        while(getchar()!='\n');
+   }
+    printf("Terima kasih telah menggunakan program penerjemah sederhana kami!\n");
+    return 0;
+}
